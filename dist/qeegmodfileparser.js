@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.qeegmodfileparser = global.qeegmodfileparser || {})));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.qeegmodfileparser = factory());
+}(this, (function () { 'use strict';
 
 /*
 * Author    Jonathan Lurie - http://me.jonahanlurie.fr
@@ -273,9 +273,7 @@ class QeegModFileParser {
   
 } /* END of QeegModFileParser */
 
-exports.QeegModFileParser = QeegModFileParser;
-
-Object.defineProperty(exports, '__esModule', { value: true });
+return QeegModFileParser;
 
 })));
 //# sourceMappingURL=qeegmodfileparser.js.map
