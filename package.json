@@ -1,17 +1,17 @@
 {
-  "name": "qeegmodfileparser",
+  "name": "qeegmodfile",
   "version": "0.1.0",
   "description": "A starting point to create ES6 module for browser",
-  "main": "src/QeegModFileParser.js",
-  "repository": "jonathanlurie/qeegmodfileparser",
-  "moduleName": "qeegmodfileparser",
+  "main": "src/QeegModFile.js",
+  "repository": "jonathanlurie/qeegmodfile",
+  "moduleName": "qeegmodfile",
   "moduleFormat": "umd",
   "moduleBuildDir": "dist",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
-    "build-min": "npm run build && printf \"// Build date: $(date '+%Y-%m%-dT%H:%M:%S')\n\n\" > dist/qeegmodfileparser.min.js && cat header.txt >> dist/qeegmodfileparser.min.js && google-closure-compiler-js dist/qeegmodfileparser.js >> dist/qeegmodfileparser.min.js",
-    "doc": "documentation src/qeegmodfileparser.js -o ./doc/ -f html"
+    "build-min": "npm run build && printf \"// Build date: $(date '+%Y-%m%-dT%H:%M:%S')\n\n\" > dist/qeegmodfile.min.js && cat header.txt >> dist/qeegmodfile.min.js && google-closure-compiler-js dist/qeegmodfile.js >> dist/qeegmodfile.min.js",
+    "doc": "documentation src/qeegmodfile.js -o ./doc/ -f html"
   },
   "author": "Jonathan Lurie",
   "license": "MIT",

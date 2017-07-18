@@ -267,4 +267,4 @@ class QeegModFileParser {
   
 } /* END of QeegModFileParser */
 
-export default QeegModFileParser;
+export { QeegModFileParser }; 

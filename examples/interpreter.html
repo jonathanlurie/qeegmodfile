@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+  <title>QEEG Parser</title>
+  
+  <!-- importing the automatically build module -->
+  <script src="../dist/qeegmodfile.js"></script>
+</head>
+<body>
+  
+  <p>
+    Select a QEEG MOD file:
+    <input type="file" id="fileInput" accept=".mod,.MOD">
+  </p>
+  <p>
+    Once the file is open, look in the Javascript console to see the result object
+  </p>
+
+  <script>
+    var fileInput = document.getElementById('fileInput');
+    
+    fileInput.addEventListener('change', function(e) {
+      var files = e.target.files;
+      
+      if( !files.length )
+        return;
+        
+      var reader = new FileReader();
+      
+      reader.onloadend = function(event) {
+        var result = event.target.result;
+        parseEegFile( result );
+      }
+      
+      reader.onerror = function() {}
+      
+      reader.readAsArrayBuffer( files[0] );
+		});
+    
+    function parseEegFile( arrayBuffer ){
+      // create an instance with no argument
+      var myEegParser = new qeegmodfile.QeegModFileParser();
+      myEegParser.setRawData( arrayBuffer );
+      
+      // qeegData contains metadata and raw data that are still hard to read 
+      var qeegData = myEegParser.parse();
+      console.log( qeegData );
+      
+      //instanciate an interpreter
+      var interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
+      
+      //console.log( interpreter.getValue( 0, 1, 0, 0 ) );
+      
+      //console.log( interpreter.getSpectrum(0, 0));
+      //console.log( interpreter.getSpectrumLabels(0, 0));
+      
+      console.log( interpreter.getType());
+      
+    }
+    
+    
+
+    
+
+  </script>
+
+</body>
+</html>

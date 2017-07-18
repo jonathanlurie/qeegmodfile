@@ -4,7 +4,7 @@
   <title>QEEG Parser</title>
   
   <!-- importing the automatically build module -->
-  <script src="../dist/qeegmodfileparser.js"></script>
+  <script src="../dist/qeegmodfile.js"></script>
 </head>
 <body>
   
@@ -35,13 +35,14 @@
       reader.onerror = function() {}
       
       reader.readAsArrayBuffer( files[0] );
-
 		});
     
     function parseEegFile( arrayBuffer ){
       // create an instance with no argument
-      var myEegParser = new qeegmodfileparser.QeegModFileParser();
+      var myEegParser = new qeegmodfile.QeegModFileParser();
       myEegParser.setRawData( arrayBuffer );
+      
+      // qeegData contains metadata and raw data that are still hard to read 
       var qeegData = myEegParser.parse();
       console.log( qeegData );
     }
