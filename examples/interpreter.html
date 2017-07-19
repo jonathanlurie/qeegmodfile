@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html>
 <head>
-  <title>QEEG Parser</title>
+  <title>QEEG Interpreter</title>
+  
+  <style>
+    
+    body {
+      margin: 100px;
+      font-family: monospace;
+      background-color: paleturquoise;
+    }
+
+    hr {
+      border-style: solid;
+      border-width: 0.5px;
+      border-top-width: 0;
+    }
+    
+  </style>
   
   <!-- importing the automatically build module -->
   <script src="../dist/qeegmodfile.js"></script>
@@ -12,6 +28,8 @@
     Select a QEEG MOD file:
     <input type="file" id="fileInput" accept=".mod,.MOD">
   </p>
+  
+  <hr>
   
   <div id="output"></div>
 
@@ -39,6 +57,8 @@
     
     
     function parseEegFile( arrayBuffer ){
+      clearOutput();
+      
       // create an instance with no argument
       var myEegParser = new qeegmodfile.QeegModFileParser();
       myEegParser.setRawData( arrayBuffer );
@@ -48,25 +68,32 @@
       console.log( qeegData );
       
       if( !qeegData ){
+        printOutput("CORRUPTED FILE!")
         console.warn("The file is corrupted.");
         return;
       }
       
-      clearOutput();
+      
       
       //instanciate an interpreter
       interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
       
+      var type = interpreter.getType();
+      var typeCode = interpreter.getTypeCode();
       var numberOfDimensionsUsed = interpreter.getNumberOfDimensionsUsed();
       var dimensionSizes = interpreter.getDimensionSizes();
       var dimensionsLabels = interpreter.getAllDimensionsLabel();
+      var startFrequency = interpreter.getStartFrequency();
+      var frequencyResolution = interpreter.getFrequencyResolution();
+      var scaleFactor = interpreter.getScaleFactor();
       
+      printOutput( "<b>Type of study:</b> " + type );
+      printOutput( "<b>Type code of study:</b> " + typeCode );
       printOutput( "<b>Number of dimensions actually used:</b> " + numberOfDimensionsUsed );
       printOutput( "<b>Dimensions' sizes:</b> " + dimensionSizes.join(", ") );
-      printOutput( "<b>Used dimension's name:</b> " + dimensionsLabels.slice(0, numberOfDimensionsUsed).join(", "));
-      
-      
-      printOutput( "" );
+      printOutput( "<b>Used dimension's name:</b> " + makeList( dimensionsLabels.slice(0, numberOfDimensionsUsed)) );
+      printOutput( "<b>Start frequency:</b> " + startFrequency );
+      printOutput( "<b>Scale factor:</b> " + scaleFactor );
 
       
       //console.log( interpreter.getValue( 0, 1, 0, 0 ) );
@@ -96,7 +123,13 @@
       output.innerHTML = "";
     }
     
-
+    // make a ul li list from an array of string 
+    function makeList( arr ){
+      if( !arr || !arr.length )
+        return "";
+        
+      return "<ul><li>" + arr.join("</li><li>") + "</li></ul>";
+    }
     
 
   </script>

@@ -20,6 +20,7 @@ class QeegModFileInterpreter {
       // "Raw Electrical Tomography Individual": "ET" // no file of this type to check if it's the correct string
     }
     
+    
     this.setQeegModObj( qeegModObj );
   }
   
@@ -245,8 +246,10 @@ class QeegModFileInterpreter {
   * @return {Number} the start frequency as a float
   */
   getStartFrequency(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[0].value;
+    if( this._typeCode === "COR" ) // do not exist for COR
+      return -1;
+      
+    return this._qeegModObj.metadata.informationList[7].values[0];
   }
   
   
@@ -255,8 +258,10 @@ class QeegModFileInterpreter {
   * @return {Number} the resolution as a float
   */
   getFrequencyResolution(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[1].value;
+    if( this._typeCode === "COR" ) // do not exist for COR
+      return -1;
+      
+    return this._qeegModObj.metadata.informationList[7].values[1];
   }
   
   
@@ -265,8 +270,12 @@ class QeegModFileInterpreter {
   * @return {Number} the factor as a float
   */
   getScaleFactor(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[2].value;
+    var index = 2
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
@@ -275,8 +284,12 @@ class QeegModFileInterpreter {
   * @return {Array} the booleans
   */
   getScaleIfScaleMeasures(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[3].value;
+    var index = 3
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
@@ -285,8 +298,12 @@ class QeegModFileInterpreter {
   * @return {String} the label 
   */
   getMeasureLabel(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[4].value;
+    var index = 4
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
@@ -295,8 +312,12 @@ class QeegModFileInterpreter {
   * @return {String} the label 
   */
   getDurationLabel(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[5].value;
+    var index = 5
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
@@ -305,8 +326,12 @@ class QeegModFileInterpreter {
   * @return {String} the label 
   */
   getFirstSpaceLabel(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[6].value;
+    var index = 6;
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
@@ -315,8 +340,12 @@ class QeegModFileInterpreter {
   * @return {String} the label 
   */
   getSecondSpaceLabel(){
-    var ctx = this._qeegModObj.metadata.informationList[7];
-    return ctx[7].value;
+    var index = 7
+    
+    if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
+      index -= 2;
+      
+    return this._qeegModObj.metadata.informationList[7].values[ index ];
   }
   
   
