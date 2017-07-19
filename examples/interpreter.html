@@ -47,8 +47,16 @@
       var qeegData = myEegParser.parse();
       console.log( qeegData );
       
+      if( !qeegData ){
+        console.warn("The file is corrupted.");
+        return;
+      }
+      
       //instanciate an interpreter
       interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
+      
+      console.log( "Number of dimensions actually used: " + interpreter.getNumberOfDimensionsUsed() );
+      console.log( "Dimesions' sizes: " + interpreter.getDimensionSizes() );
       
       //console.log( interpreter.getValue( 0, 1, 0, 0 ) );
       
@@ -58,8 +66,8 @@
       //console.log( interpreter.getType() );
       
       
-      console.log( interpreter.getSpectrumByLabels( "Absolute Power", "Theta" ) );
-      console.log( interpreter.getSpectrumLabelsByLabels( "Absolute Power", "Theta" ) );
+      //console.log( interpreter.getSpectrumByLabels( "Absolute Power", "Theta" ) );
+      //console.log( interpreter.getSpectrumLabelsByLabels( "Absolute Power", "Theta" ) );
       
       
     }

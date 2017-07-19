@@ -427,6 +427,41 @@ class QeegModFileInterpreter {
   
   
   /**
+  * Get the size of the dimensions, in the order of varying speed
+  * (the last varies faster)
+  * @return {Array} the dimensions
+  */
+  getDimensionSizes(){
+    return [
+      this._qeegModObj.metadata.sizes.measure,
+      this._qeegModObj.metadata.sizes.duration,
+      this._qeegModObj.metadata.sizes.firstSpace,
+      this._qeegModObj.metadata.sizes.secondSpace
+    ]
+  }
+  
+  
+  /**
+  * Get the number of dimensions actually used in this dataset.
+  * Note: the second-space is not used by all files and even the first-space
+  * for some other. No matter the number of dimensions used,
+  * they are always the first N dim in the sens that they are always the
+  * first N slowest varying dim.
+  * @return {Number} the 
+  */
+  getNumberOfDimensionsUsed(){
+    var sizes = this.getDimensionSizes();
+    
+    for(var i=sizes.length-1; i>=0; i--){
+      if( sizes[i] > 1){
+        return i + 1;
+      }
+    }
+    return 0;
+  }
+  
+  
+  /**
   * Get the transformation applied to the data.
   *   0 => no transformation
   *   3 => natural logarithm (log e) 
@@ -486,13 +521,19 @@ class QeegModFileInterpreter {
     }
     
     var offset = this._getOffset( measureIndex, durationIndex, firstSpaceIndex, secondSpaceIndex );
-    
     return this._qeegModObj.data[ offset ];
   }
   
   
   /**
-  * Get an array of values
+  * Get an array of values for such measureIndex, durationIndex and firstSpaceIndex.
+  * These 3 arguments are optional but the unused ones must be on the right.
+  * If using no argument, or only measureIndex, or only measureIndex and durationIndex,
+  * then a larger array corresponding o broarder range of data will be returned
+  * @param {Number} measureIndex - the  index within the "measure" dimension
+  * @param {Number} durationIndex - the  index within the "duration" dimension
+  * @param {Number} firstSpaceIndex - the  index within the "first-space" dimension
+  * @return {Array} the data, or null
   */
   getSpectrum( measureIndex = -1, durationIndex = -1, firstSpaceIndex = -1){
     var sizes = this._qeegModObj.metadata.sizes;
@@ -544,29 +585,83 @@ class QeegModFileInterpreter {
   
   
   /**
-  * 
+  * Instead of using indexes among each dimension, it can be easier to call values by their names.
+  * Does the same as `.getSpectrum()` but uses names instead of indexes.
+  * @param {String} measureLabel - the desired label within the 'measure' dimension (optional)
+  * @param {String} durationLabel - the desired label within the 'duration' dimension (optional)
+  * @param {String} firstSpaceLabel - the desired label within the 'first-space' dimension (optional)
+  * @return {Array} matched data, or null if using a non-existing label
   */
-  getSpectrumByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+  getSpectrumByLabels( measureLabel = null, durationLabel = null, firstSpaceLabel = null ){
     var info = this._qeegModObj.metadata.informationList;
-    var measureIndex = info[0].labels.indexOf( measureName );
-    var durationIndex = info[1].labels.indexOf( durationName );
-    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName );
+    var measureIndex = info[0].labels.indexOf( measureLabel );
+    var durationIndex = info[1].labels.indexOf( durationLabel );
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceLabel );
+    
+    if( measureLabel && measureIndex == -1 ){
+      console.warn("The measure label " + measureLabel + " could not be found.");
+      return null
+    }
+    
+    if( durationLabel && durationIndex == -1 ){
+      console.warn("The duration label " + durationLabel + " could not be found.");
+      return null
+    }
+    
+    if( firstSpaceLabel && firstSpaceIndex == -1 ){
+      console.warn("The first-space label " + firstSpaceLabel + " could not be found.");
+      return null
+    }
     
     return this.getSpectrum( measureIndex, durationIndex, firstSpaceIndex );
   }
   
   
-  getSpectrumLabelsByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+  /**
+  * Get all the labels as a hierarchical cascade. For examples, if you feel
+  * the 3 arguments for a dataset that have a second-space dimension of size
+  * greater than 1, it will return an array [ "the measure label",
+  * "the duration label", "the first space label", ["1st label of 2nd sp"
+  * "2nd label of 2nd sp", "3rd label of 2nd sp"]]. Only the last argument
+  * (the array) is not already given in argument but this sort of repeat is so
+  * that the returned values has all the cascade.
+  * @param {String} measureLabel - the desired label within the 'measure' dimension (optional)
+  * @param {String} durationLabel - the desired label within the 'duration' dimension (optional)
+  * @param {String} firstSpaceLabel - the desired label within the 'first-space' dimension (optional)
+  * @return {Array} contains the hierarchical cascade of labels, the last element being an array
+  */
+  getSpectrumLabelsByLabels( measureLabel = null, durationLabel = null, firstSpaceLabel = null ){
     var info = this._qeegModObj.metadata.informationList;
-    var measureIndex = info[0].labels.indexOf( measureName );
-    var durationIndex = info[1].labels.indexOf( durationName );
-    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName );
+    var measureIndex = info[0].labels.indexOf( measureLabel );
+    var durationIndex = info[1].labels.indexOf( durationLabel );
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceLabel );
+    
+    if( measureLabel && measureIndex == -1 ){
+      console.warn("The measure label " + measureLabel + " could not be found.");
+      return null
+    }
+    
+    if( durationLabel && durationIndex == -1 ){
+      console.warn("The duration label " + durationLabel + " could not be found.");
+      return null
+    }
+    
+    if( firstSpaceLabel && firstSpaceIndex == -1 ){
+      console.warn("The first-space label " + firstSpaceLabel + " could not be found.");
+      return null
+    }
     
     return this.getSpectrumLabels( measureIndex, durationIndex, firstSpaceIndex );
   }
   
+  
   /**
-  * Return the labels of a given spectrum as a hierarchical cascade.
+  * Does like getSpectrumLabelsByLabels but uses the indexes among each dimension
+  * rather than their labels.
+  * @param {Number} measureIndex - the  index within the "measure" dimension
+  * @param {Number} durationIndex - the  index within the "duration" dimension
+  * @param {Number} firstSpaceIndex - the  index within the "first-space" dimension
+  * @return {Array} contains the hierarchical cascade of labels, the last element being an array
   */
   getSpectrumLabels( measureIndex = -1, durationIndex = -1, firstSpaceIndex = -1 ){
     var sizes = this._qeegModObj.metadata.sizes;
