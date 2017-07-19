@@ -1,4 +1,4 @@
-[DEMO](http://me.jonathanlurie.fr/qeegmodfileparser/examples/interpreter.html)  
+[DEMO](http://me.jonathanlurie.fr/qeegmodfile/examples/interpreter.html)  
 
 # What is it for?
 QeegModFileParser is Javascript parser for the quantitative EEG binary (.MOD) files used in the #CCC (Canada-China-Cuba) neuroscience consortium.  
