@@ -12,9 +12,8 @@
     Select a QEEG MOD file:
     <input type="file" id="fileInput" accept=".mod,.MOD">
   </p>
-  <p>
-    Once the file is open, look in the Javascript console to see the result object
-  </p>
+  
+  <div id="output"></div>
 
   <script>
     var fileInput = document.getElementById('fileInput');
@@ -38,6 +37,7 @@
       reader.readAsArrayBuffer( files[0] );
 		});
     
+    
     function parseEegFile( arrayBuffer ){
       // create an instance with no argument
       var myEegParser = new qeegmodfile.QeegModFileParser();
@@ -52,11 +52,22 @@
         return;
       }
       
+      clearOutput();
+      
       //instanciate an interpreter
       interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
       
-      console.log( "Number of dimensions actually used: " + interpreter.getNumberOfDimensionsUsed() );
-      console.log( "Dimesions' sizes: " + interpreter.getDimensionSizes() );
+      var numberOfDimensionsUsed = interpreter.getNumberOfDimensionsUsed();
+      var dimensionSizes = interpreter.getDimensionSizes();
+      var dimensionsLabels = interpreter.getAllDimensionsLabel();
+      
+      printOutput( "<b>Number of dimensions actually used:</b> " + numberOfDimensionsUsed );
+      printOutput( "<b>Dimensions' sizes:</b> " + dimensionSizes.join(", ") );
+      printOutput( "<b>Used dimension's name:</b> " + dimensionsLabels.slice(0, numberOfDimensionsUsed).join(", "));
+      
+      
+      printOutput( "" );
+
       
       //console.log( interpreter.getValue( 0, 1, 0, 0 ) );
       
@@ -72,6 +83,18 @@
       
     }
     
+    
+    // add an output to the log place
+    function printOutput( str ){
+      var output = document.getElementById( "output" );
+      output.innerHTML += "<p>" + str + "</p>";
+    }
+    
+    // clear the output zone
+    function clearOutput(){
+      var output = document.getElementById( "output" );
+      output.innerHTML = "";
+    }
     
 
     

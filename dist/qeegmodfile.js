@@ -490,6 +490,121 @@ class QeegModFileInterpreter {
   
   
   /**
+  * get all the context as an array of pairs { label: String, value: Number/Array }
+  * @return {Array} the list of contexts
+  */
+  getAllContexts(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    
+    if( ctx.labels.length != ctx.values.length ){
+      console.warn("The contexts is corrupted. Inequal amount of values/labels.");
+      return null;
+    }
+    
+    var allContexts = [];
+    
+    for(var i=0; i<ctx.labels.length; i++){
+      allContexts.push({
+        label: ctx.labels[ i ],
+        value: ctx.values[ i ]
+      });
+    }
+    
+    return allContexts;
+  }
+  
+  
+  /**
+  * Get the start Frequency
+  * @return {Number} the start frequency as a float
+  */
+  getStartFrequency(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[0].value;
+  }
+  
+  
+  /**
+  * Get the frequency resolution
+  * @return {Number} the resolution as a float
+  */
+  getFrequencyResolution(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[1].value;
+  }
+  
+  
+  /**
+  * Get the scale factor
+  * @return {Number} the factor as a float
+  */
+  getScaleFactor(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[2].value;
+  }
+  
+  
+  /**
+  * Get an array of boolean informing of the measure has to be scaled with the scale factor
+  * @return {Array} the booleans
+  */
+  getScaleIfScaleMeasures(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[3].value;
+  }
+  
+  
+  /**
+  * Get the actual label for the "measure" dimension
+  * @return {String} the label 
+  */
+  getMeasureLabel(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[4].value;
+  }
+  
+  
+  /**
+  * Get the actual label for the "duration" dimension
+  * @return {String} the label 
+  */
+  getDurationLabel(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[5].value;
+  }
+  
+  
+  /**
+  * Get the actual label for the "first-space" dimension
+  * @return {String} the label 
+  */
+  getFirstSpaceLabel(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[6].value;
+  }
+  
+  
+  /**
+  * Get the actual label for the "second-space" dimension
+  * @return {String} the label 
+  */
+  getSecondSpaceLabel(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[7].value;
+  }
+  
+  
+  /**
+  * Get the actual label for the "second-space" dimension
+  * @return {String} the label 
+  */
+  getSecondSpaceLabel(){
+    var ctx = this._qeegModObj.metadata.informationList[7];
+    return ctx[7].value;
+  }
+  
+  
+  /**
   * Get a single value, given some indexes
   * @param {Number} measureIndex - index among the "measure" dimension
   * @param {Number} durationIndex - index among the "duration" dimension
@@ -769,6 +884,9 @@ class QeegModFileInterpreter {
     var sizes = this._qeegModObj.metadata.sizes;
     return ( measureIndex * sizes.duration * sizes.firstSpace + durationIndex * sizes.firstSpace + firstSpaceIndex ) * sizes.secondSpace + secondSpaceIndex;
   }
+  
+  
+  
   
 } /* END of class QeegModFileInterpreter */
 
