@@ -18,6 +18,7 @@
 
   <script>
     var fileInput = document.getElementById('fileInput');
+    var interpreter = null;
     
     fileInput.addEventListener('change', function(e) {
       var files = e.target.files;
@@ -47,14 +48,19 @@
       console.log( qeegData );
       
       //instanciate an interpreter
-      var interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
+      interpreter = new qeegmodfile.QeegModFileInterpreter( qeegData );
       
       //console.log( interpreter.getValue( 0, 1, 0, 0 ) );
       
       //console.log( interpreter.getSpectrum(0, 0));
       //console.log( interpreter.getSpectrumLabels(0, 0));
       
-      console.log( interpreter.getType());
+      //console.log( interpreter.getType() );
+      
+      
+      console.log( interpreter.getSpectrumByLabels( "Absolute Power", "Theta" ) );
+      console.log( interpreter.getSpectrumLabelsByLabels( "Absolute Power", "Theta" ) );
+      
       
     }
     

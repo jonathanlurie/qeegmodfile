@@ -1,4 +1,4 @@
-[DEMO](http://me.jonathanlurie.fr/qeegmodfileparser/examples/test.html)  
+[DEMO](http://me.jonathanlurie.fr/qeegmodfileparser/examples/parser.html)  
 
 # What is it for?
 QeegModFileParser is Javascript parser for the quantitative EEG binary (.MOD) files used in the #CCC (Canada-China-Cuba) neuroscience consortium.  
@@ -9,7 +9,7 @@ The parser is supposed to be used in browser but could be used server side. It u
 # How to use?
 An instance of QeegModFileParser can be used to parse several file (you don't need to create a QeegModFileParser instance per file to parse). The Qeeg MOD file usually have the .MOD extension, though this parser does not need the filename or its extension.  
 
-The parser takes an `ArrayBuffer` from a file. See [examples/test.html](examples/test.html) to extract the `ArrayBuffer` from a file opened with a *file dialog*.
+The parser takes an `ArrayBuffer` from a file. See [examples/parser.html](examples/parser.html) to extract the `ArrayBuffer` from a file opened with a *file dialog*.
 
 Then, instanciate a `QeegModFileParser` object, feed it with the *buffer* and launch `.parse()` to get the result object:  
 

@@ -276,65 +276,151 @@ class QeegModFileParser {
 class QeegModFileInterpreter {
   
   constructor( qeegModObj = null ){
-    this._qeegModObj = qeegModObj;
-    /*
-    this._typeMap = {
-      ""
+    this._qeegModObj = null;
+    this._typeCode = null;
+    
+    this._typeCodeMap = {
+      "Z Electrical Tomography for Cortex and Basal Ganglia": "ZETCBG",
+      "Z Electrical Tomography for Cortex": "ZETC",
+      "Z Cross Spectrum": "ZCROSS",
+      "Z Broad Band": "ZBBSP",
+      "Phase": "PHA",
+      "Electrical Tomography for Cortex and Basal Ganglia": "ETCBG",
+      "Electrical Tomography for Cortex": "ETC",
+      "Cross Spectrum": "CROSS",
+      "Correlation": "COR",
+      "Coherence": "COH",
+      "Broad Band": "BBSP",
+      // "Raw Electrical Tomography Individual": "ET" // no file of this type to check if it's the correct string
+    };
+    
+    this.setQeegModObj( qeegModObj );
+  }
+  
+  
+  /**
+  * [PRIVATE]
+  * find the typecode by correspondance with the `comment` metadata
+  */
+  _defineTypeCode(){
+    var type = this.getType();
+    
+    if( type in this._typeCodeMap ){
+      this._typeCode = this._typeCodeMap[ type ];
     }
-    */
   }
   
   
+  /**
+  * In case the qeeg MOD object from the parser is not set in the constructor, it can be set here.
+  * @param {Object} qeegModObj - output of a QeegModFileParser instance
+  */
   setQeegModObj( qeegModObj = null ){
+    if( !qeegModObj )
+      return;
+      
     this._qeegModObj = qeegModObj;
+    this._defineTypeCode();
   }
   
   
+  /**
+  * Get the qeeg type from the object comment
+  * @return {String} the type
+  */
   getType(){
     return this._qeegModObj.metadata.comment;
   }
   
   
-  getMeasuresAvailable(){
+  /**
+  * Get the type code of the data. Can be 'CROSS', 'ZCROSS', 'BBSP', 'ZBBSP',
+  * 'ETC', 'ZETC', 'ETCBG', 'ZETCBG', 'ET', 'COR', 'COH', 'PHA'
+  * @return {string} the type code or null if it was impossible to determine
+  */
+  getTypeCode(){
+    return this._typeCode;
+  }
+  
+  
+  /**
+  * Get all the measure labels
+  * @return {Array} array of strings
+  */
+  getMeasureLabels(){
     return this._qeegModObj.metadata.informationList[0].labels;
   }
   
   
-  getDurationsAvailable(){
+  /**
+  * Get all the duration labels
+  * @return {Array} array of strings
+  */
+  getDurationsLabels(){
     return this._qeegModObj.metadata.informationList[1].labels;
   }
   
   
+  /**
+  * Get all the first-space labels
+  * @return {Array} array of strings
+  */
   getFirstSpacelabels(){
     return this._qeegModObj.metadata.informationList[2].labels;
   }
   
   
+  /**
+  * Get all the second-space labels
+  * @return {Array} array of strings
+  */
   getSecondSpacelabels(){
     return this._qeegModObj.metadata.informationList[3].labels;
   }
   
   
+  /**
+  * Get all the unit labels
+  * @return {Array} array of strings
+  */
   getUnitsLabels(){
     return this._qeegModObj.metadata.informationList[5].labels;
   }
   
   
+  /**
+  * Get the size of the measure dimension
+  * @return {Number} the size
+  */
   getMeasureSize(){
     return this._qeegModObj.metadata.sizes.measure;
   }
   
   
+  /**
+  * Get the size of the duration dimension
+  * Note: the name "duration" is missleading, take it as a sort of measure,
+  *       aka. just another dimension
+  * @return {Number} the size
+  */
   getDurationSize(){
     return this._qeegModObj.metadata.sizes.duration;
   }
   
   
+  /**
+  * Get the size of the first-space dimension
+  * @return {Number} the size
+  */
   getFirstSpaceSize(){
     return this._qeegModObj.metadata.sizes.firstSpace;
   }
   
   
+  /**
+  * Get the size of the second-space dimension
+  * @return {Number} the size
+  */
   getSecondSpaceSize(){
     return this._qeegModObj.metadata.sizes.secondSpace;
   }
@@ -369,7 +455,12 @@ class QeegModFileInterpreter {
   
   
   /**
-  * Get a single value, given the indexes
+  * Get a single value, given some indexes
+  * @param {Number} measureIndex - index among the "measure" dimension
+  * @param {Number} durationIndex - index among the "duration" dimension
+  * @param {Number} firstSpaceIndex - index among the "first space" dimension
+  * @param {Number} secondSpaceIndex - index among the "second space" dimension
+  * @return {Number} the value
   */
   getValue( measureIndex, durationIndex, firstSpaceIndex, secondSpaceIndex ){
     var sizes = this._qeegModObj.metadata.sizes;
@@ -451,6 +542,28 @@ class QeegModFileInterpreter {
     return null;
   }
   
+  
+  /**
+  * 
+  */
+  getSpectrumByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+    var info = this._qeegModObj.metadata.informationList;
+    var measureIndex = info[0].labels.indexOf( measureName );
+    var durationIndex = info[1].labels.indexOf( durationName );
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName );
+    
+    return this.getSpectrum( measureIndex, durationIndex, firstSpaceIndex );
+  }
+  
+  
+  getSpectrumLabelsByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+    var info = this._qeegModObj.metadata.informationList;
+    var measureIndex = info[0].labels.indexOf( measureName );
+    var durationIndex = info[1].labels.indexOf( durationName );
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName );
+    
+    return this.getSpectrumLabels( measureIndex, durationIndex, firstSpaceIndex );
+  }
   
   /**
   * Return the labels of a given spectrum as a hierarchical cascade.

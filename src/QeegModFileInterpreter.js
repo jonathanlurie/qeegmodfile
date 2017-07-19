@@ -269,8 +269,26 @@ class QeegModFileInterpreter {
   }
   
   
-  getSpectrumByName( measureName = -1, durationName = -1, firstSpaceName = -1 ){
-    // TODO
+  /**
+  * 
+  */
+  getSpectrumByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+    var info = this._qeegModObj.metadata.informationList;
+    var measureIndex = info[0].labels.indexOf( measureName )
+    var durationIndex = info[1].labels.indexOf( durationName )
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName )
+    
+    return this.getSpectrum( measureIndex, durationIndex, firstSpaceIndex );
+  }
+  
+  
+  getSpectrumLabelsByLabels( measureName = null, durationName = null, firstSpaceName = null ){
+    var info = this._qeegModObj.metadata.informationList;
+    var measureIndex = info[0].labels.indexOf( measureName )
+    var durationIndex = info[1].labels.indexOf( durationName )
+    var firstSpaceIndex = info[2].labels.indexOf( firstSpaceName )
+    
+    return this.getSpectrumLabels( measureIndex, durationIndex, firstSpaceIndex );
   }
   
   /**
