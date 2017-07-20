@@ -2,11 +2,11 @@
 <html>
 <head>
   <title>QEEG Interpreter</title>
-  
+  <script src="https://use.fontawesome.com/a91194743a.js"></script>
   <style>
     
     body {
-      margin: 100px;
+      margin: 10vh 10vw 10vh 10vw;
       font-family: monospace;
       background-color: paleturquoise;
     }
@@ -17,25 +17,68 @@
       border-top-width: 0;
     }
     
+    select {
+      margin-right: 30px;
+      margin-left: 5px;
+    }
+    
+    a {
+      color: black;
+      transition: all 0.2s;
+    }
+    
+    a:hover {
+      color: #d40000;
+    }
+    
+    #chartDiv {
+      background-color: white;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    
   </style>
+  
+  <script src="http://me.jonathanlurie.fr/SpectrumPlot2/dist/SpectrumPlot2.js"></script>
   
   <!-- importing the automatically build module -->
   <script src="../dist/qeegmodfile.js"></script>
 </head>
 <body>
-  
+  <!--
   <p>
     Select a QEEG MOD file:
     <input type="file" id="fileInput" accept=".mod,.MOD">
   </p>
+  -->
+
+  <div style="display: flex;">
+    <div style="width: 50%">
+      Select a QEEG MOD file:
+      <input type="file" id="fileInput" accept=".mod,.MOD">
+    </div>
+    <div style="width: 50%">
+      <a href="https://github.com/jonathanlurie/qeegmodfile">
+        <i class="fa fa-github" style="float: right; font-size: x-large;" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
   
   <hr>
   
   <div id="output"></div>
+  
+  <div id="featureSelect"></div>
+  
+  <div id="chartDiv"></div>
 
   <script>
     var fileInput = document.getElementById('fileInput');
     var interpreter = null;
+    var spectrumPlot = new SpectrumPlot2.SpectrumPlot2( "chartDiv", 400, 300 );
+    spectrumPlot.enableMarkers();
+    spectrumPlot.addSpectrum( "spectrum", [], "rgba(80, 120, 255, 0.8)" );
     
     fileInput.addEventListener('change', function(e) {
       var files = e.target.files;
@@ -82,7 +125,7 @@
       var typeCode = interpreter.getTypeCode();
       var numberOfDimensionsUsed = interpreter.getNumberOfDimensionsUsed();
       var dimensionSizes = interpreter.getDimensionSizes();
-      var dimensionsLabels = interpreter.getAllDimensionsLabel();
+      var dimensionsLabels = interpreter.getAllDimensionsNames();
       var startFrequency = interpreter.getStartFrequency();
       var frequencyResolution = interpreter.getFrequencyResolution();
       var scaleFactor = interpreter.getScaleFactor();
@@ -107,7 +150,7 @@
       //console.log( interpreter.getSpectrumByLabels( "Absolute Power", "Theta" ) );
       //console.log( interpreter.getSpectrumLabelsByLabels( "Absolute Power", "Theta" ) );
       
-      
+      buildFeatureSelect();
     }
     
     
@@ -131,6 +174,80 @@
       return "<ul><li>" + arr.join("</li><li>") + "</li></ul>";
     }
     
+    
+    function buildFeatureSelect(){
+      var featureSelect = document.getElementById( "featureSelect" );
+      featureSelect.innerHTML = '';
+      
+      var numberOfDimensionsUsed = interpreter.getNumberOfDimensionsUsed();
+      var dimensionsNames = interpreter.getAllDimensionsNames();
+      var allLabels = interpreter.getSpectrumLabels()
+      
+      var selectList = [];
+      
+      console.log( numberOfDimensionsUsed );
+      console.log( dimensionsNames );
+      console.log( allLabels );
+      
+      // for each dimension used - 1
+      for(var d=0; d<numberOfDimensionsUsed - 1; d++){
+        featureSelect.innerHTML += dimensionsNames[d];
+        
+        var dimensionSelect = document.createElement("select");
+        selectList.push( dimensionSelect )
+        dimensionSelect.id = "dimension_" + d;
+        featureSelect.appendChild(dimensionSelect);
+        
+        // for each 
+        for(var l=0; l<allLabels[d].length; l++){
+          var label = document.createElement("option");
+          label.value = allLabels[d][l];
+          label.text = allLabels[d][l];
+          dimensionSelect.appendChild(label);
+        }
+        
+      }
+      
+      // create button
+      var submitButton = document.createElement("input");
+      submitButton.type = "submit";
+      submitButton.value = "plot >>";
+      featureSelect.appendChild(submitButton);
+      
+      submitButton.addEventListener( "mouseup", function( e ){
+        //var select = document.getElementById( "dimension_0" )
+        //console.log( select.selectedIndex );
+        //console.log( selectList[1].selectedIndex );
+        
+        /*
+        for(var s=0; s<selectList.length; s++){
+          console.log( selectList[s].id );
+          console.log( selectList[s].selectedIndex );
+        }
+        */
+        
+        var selectedLabelIndexes = []
+        
+        for(var d=0; d<numberOfDimensionsUsed - 1; d++){
+          var select = document.getElementById( "dimension_" + d );
+          selectedLabelIndexes.push( select.selectedIndex )
+        }
+        
+        console.log( selectedLabelIndexes );
+        
+        var spectrum = interpreter.getSpectrum( ...selectedLabelIndexes )
+        var spectrumLabels = interpreter.getSpectrumLabels( ...selectedLabelIndexes )
+        
+        console.log( spectrum );
+        console.log( spectrumLabels );
+        
+        document.getElementById( "chartDiv" ).style.display = "inherit";
+        
+        spectrumPlot.updateSpectrum( 0, spectrum);
+        spectrumPlot.setLabels(  spectrumLabels[ spectrumLabels.length - 1 ] );
+        spectrumPlot.draw();
+      });
+    }
 
   </script>
 

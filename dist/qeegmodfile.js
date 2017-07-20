@@ -348,7 +348,7 @@ class QeegModFileInterpreter {
   * Get all the measure labels
   * @return {Array} array of strings
   */
-  getMeasureLabels(){
+  getMeasureNames(){
     return this._qeegModObj.metadata.informationList[0].labels;
   }
   
@@ -366,7 +366,7 @@ class QeegModFileInterpreter {
   * Get all the first-space labels
   * @return {Array} array of strings
   */
-  getFirstSpacelabels(){
+  getFirstSpaceNames(){
     return this._qeegModObj.metadata.informationList[2].labels;
   }
   
@@ -375,7 +375,7 @@ class QeegModFileInterpreter {
   * Get all the second-space labels
   * @return {Array} array of strings
   */
-  getSecondSpacelabels(){
+  getSecondSpaceNames(){
     return this._qeegModObj.metadata.informationList[3].labels;
   }
   
@@ -568,10 +568,10 @@ class QeegModFileInterpreter {
   
   
   /**
-  * Get the actual label for the "measure" dimension
-  * @return {String} the label 
+  * Get the actual name for the "measure" dimension
+  * @return {String} the name 
   */
-  getMeasureLabel(){
+  getMeasureName(){
     var index = 4;
     
     if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
@@ -582,10 +582,10 @@ class QeegModFileInterpreter {
   
   
   /**
-  * Get the actual label for the "duration" dimension
-  * @return {String} the label 
+  * Get the actual name for the "duration" dimension
+  * @return {String} the name 
   */
-  getDurationLabel(){
+  getDurationName(){
     var index = 5;
     
     if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
@@ -596,10 +596,10 @@ class QeegModFileInterpreter {
   
   
   /**
-  * Get the actual label for the "first-space" dimension
-  * @return {String} the label 
+  * Get the actual name for the "first-space" dimension
+  * @return {String} the name 
   */
-  getFirstSpaceLabel(){
+  getFirstSpaceName(){
     var index = 6;
     
     if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
@@ -610,10 +610,10 @@ class QeegModFileInterpreter {
   
   
   /**
-  * Get the actual label for the "second-space" dimension
-  * @return {String} the label 
+  * Get the actual name for the "second-space" dimension
+  * @return {String} the name 
   */
-  getSecondSpaceLabel(){
+  getSecondSpaceName(){
     var index = 7;
     
     if( this._typeCode === "COR" ) // the 2 first elements dont exist for COR
@@ -626,12 +626,12 @@ class QeegModFileInterpreter {
   /**
   *
   */
-  getAllDimensionsLabel(){
+  getAllDimensionsNames(){
     return [
-      this.getMeasureLabel(),
-      this.getDurationLabel(),
-      this.getFirstSpaceLabel(),
-      this.getSecondSpaceLabel()
+      this.getMeasureName(),
+      this.getDurationName(),
+      this.getFirstSpaceName(),
+      this.getSecondSpaceName()
     ]
   }
   
