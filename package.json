@@ -2,7 +2,7 @@
   "name": "qeegmodfile",
   "version": "0.1.0",
   "description": "A starting point to create ES6 module for browser",
-  "main": "dist/qeegmodfile.min.js",
+  "main": "dist/qeegmodfile.js",
   "repository": "jonathanlurie/qeegmodfile",
   "moduleName": "qeegmodfile",
   "moduleFormat": "umd",
