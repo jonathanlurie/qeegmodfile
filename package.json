@@ -1,12 +1,12 @@
 {
   "name": "qeegmodfile",
   "version": "0.1.1",
-  "description": "A starting point to create ES6 module for browser",
-  "main": "dist/qeegmodfile.js",
+  "description": "Parser for qEEG MOD files",
   "repository": "jonathanlurie/qeegmodfile",
-  "moduleName": "qeegmodfile",
-  "moduleFormat": "umd",
-  "moduleBuildDir": "dist",
+  "entry": "src/main.js",
+  "main": "dist/qeegmodfile.cjs.js",
+  "cjs": "dist/qeegmodfile.cjs.js",
+  "umd": "dist/qeegmodfile.umd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
@@ -20,11 +20,14 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "documentation": "^3.0.4",
-    "google-closure-compiler-js": "^20170218.0.0",
-    "rollup": "^0.36.4",
+    "google-closure-compiler-js": "^20180204.0.0",
+    "rollup": "^0.57.1",
     "rollup-plugin-babel": "^3.0.3",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-node-resolve": "^2.0.0"
-  },
-  "dependencies": {}
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "serve": "^6.3.1"
+  }
 }

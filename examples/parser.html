@@ -2,12 +2,12 @@
 <html>
 <head>
   <title>QEEG Parser</title>
-  
+
   <!-- importing the automatically build module -->
-  <script src="../dist/qeegmodfile.js"></script>
+  <script src="../dist/qeegmodfile.umd.js"></script>
 </head>
 <body>
-  
+
   <p>
     Select a QEEG MOD file:
     <input type="file" id="fileInput" accept=".mod,.MOD">
@@ -18,38 +18,38 @@
 
   <script>
     var fileInput = document.getElementById('fileInput');
-    
+
     fileInput.addEventListener('change', function(e) {
       var files = e.target.files;
-      
+
       if( !files.length )
         return;
-        
+
       var reader = new FileReader();
-      
+
       reader.onloadend = function(event) {
         var result = event.target.result;
         parseEegFile( result );
       }
-      
+
       reader.onerror = function() {}
-      
+
       reader.readAsArrayBuffer( files[0] );
 		});
-    
+
     function parseEegFile( arrayBuffer ){
       // create an instance with no argument
       var myEegParser = new qeegmodfile.QeegModFileParser();
       myEegParser.setRawData( arrayBuffer );
-      
-      // qeegData contains metadata and raw data that are still hard to read 
+
+      // qeegData contains metadata and raw data that are still hard to read
       var qeegData = myEegParser.parse();
       console.log( qeegData );
     }
-    
-    
 
-    
+
+
+
 
   </script>
 
