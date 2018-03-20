@@ -4,7 +4,7 @@
   "description": "Parser for qEEG MOD files",
   "repository": "jonathanlurie/qeegmodfile",
   "entry": "src/main.js",
-  "main": "dist/qeegmodfile.cjs.js",
+  "main": "dist/qeegmodfile.umd.js",
   "cjs": "dist/qeegmodfile.cjs.js",
   "umd": "dist/qeegmodfile.umd.js",
   "scripts": {
